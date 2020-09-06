@@ -1,5 +1,5 @@
 import { Client } from "@stomp/stompjs";
-import { getLogger } from "./logger";
+import { getLogger } from "../logger";
 
 const logger = getLogger("StompClient");
 

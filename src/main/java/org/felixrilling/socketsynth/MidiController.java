@@ -7,8 +7,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Controller
 public class MidiController {
 

@@ -1,6 +1,9 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        "sourceMap": true
+        "sourceMap": true,
+        "allowJs": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true
     }
 }

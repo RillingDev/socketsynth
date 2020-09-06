@@ -1,17 +1,25 @@
 import { getLogger } from "./logger";
-import { createClient, wrapAsJsonClient } from "./ws";
-import { MidiEvent } from "./midiEvent";
+import { createClient, wrapAsJsonClient } from "./messaging/ws";
+import type { MidiEvent } from "./audio/midiEvent";
+import { pressKey } from "./audio/synth";
+import { createKeyboard } from "./audio/keyboard";
 
 const logger = getLogger("main");
+
+const keyboardContainer = document.getElementById("keyboard")!;
 
 createClient("ws://localhost:8080/ws")
     .then((client) => {
         logger.info("Connected.", client);
         const jsonClient = wrapAsJsonClient<MidiEvent>(client);
 
-        jsonClient.subscribe("/topic/midi/output", (data) => {
-            logger.info("EVENT", data);
+        createKeyboard(keyboardContainer, (midiEvent) => {
+            jsonClient.publish("/app/midi/input", midiEvent);
         });
-        jsonClient.publish("/app/midi/input", { key: "C" });
+
+        jsonClient.subscribe("/topic/midi/output", (midiEvent) => {
+            const release = pressKey(midiEvent);
+            setTimeout(() => release(), 500);
+        });
     })
     .catch((e) => logger.error("Received error.", e));
