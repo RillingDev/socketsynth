@@ -1,4 +1,4 @@
-package org.felixrilling.socketsynth.model;
+package org.felixrilling.socketsynth.midi;
 
 public class Note {
     private String key;

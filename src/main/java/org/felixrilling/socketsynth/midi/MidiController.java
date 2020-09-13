@@ -1,6 +1,5 @@
-package org.felixrilling.socketsynth;
+package org.felixrilling.socketsynth.midi;
 
-import org.felixrilling.socketsynth.model.MidiEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;

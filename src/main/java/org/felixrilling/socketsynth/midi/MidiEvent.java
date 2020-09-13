@@ -1,4 +1,4 @@
-package org.felixrilling.socketsynth.model;
+package org.felixrilling.socketsynth.midi;
 
 public class MidiEvent {
     private Note note;
