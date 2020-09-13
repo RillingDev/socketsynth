@@ -1,3 +1,0 @@
-[submodule "src/main/ts/beep"]
-	path = src/main/ts/beep
-	url = https://github.com/stewdio/beep.js
