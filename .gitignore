@@ -34,8 +34,14 @@ tsconfig.*.tsbuildinfo
 
 # Build Output files
 target
+
 main.js
 main.js.map
 main.js.LICENSE.txt
+
+main.css
+main.css.map
+
+
 
 keystore/
