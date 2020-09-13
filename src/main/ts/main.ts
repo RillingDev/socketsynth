@@ -1,10 +1,12 @@
 import { getLogger } from "./logger";
 import { createClient, wrapAsJsonClient } from "./messaging/ws";
 import type { MidiEvent } from "./audio/midiEvent";
-import { pressKey } from "./audio/synth";
-import { createKeyboard } from "./audio/keyboard";
+import { createSynth } from "./audio/synth";
+import { createKeyboard } from "./dom/keyboard";
 
 const logger = getLogger("main");
+
+const { handleMidiEvent } = createSynth();
 
 const keyboardContainer = document.getElementById("keyboard")!;
 
@@ -18,8 +20,7 @@ createClient(`wss://${location.host}${location.pathname}ws`)
         });
 
         jsonClient.subscribe("/topic/midi/output", (midiEvent) => {
-            const release = pressKey(midiEvent);
-            setTimeout(() => release(), 500);
+            handleMidiEvent(midiEvent);
         });
     })
     .catch((e) => logger.error("Received error.", e));

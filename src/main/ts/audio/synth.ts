@@ -1,28 +1,52 @@
 import type { MidiEvent } from "./midiEvent";
-import { createOsc } from "./ctx";
-import { getNote } from "./notes";
+import { Type } from "./midiEvent";
+import { createOsc } from "./audioCtx";
+import { getNoteFreq, getNoteString } from "./note";
 import { getLogger } from "../logger";
 
 const logger = getLogger("Synth");
 
-export type ReleaseCallback = () => void;
+type MidiEventHandler = (midiEvent: MidiEvent) => void;
 
-export const pressKey = (midiEvent: MidiEvent): ReleaseCallback => {
-    const osc = createOsc();
+export const createSynth: () => {
+    handleMidiEvent: MidiEventHandler;
+} = () => {
+    const active = new Map<string, OscillatorNode>();
 
-    const note = getNote(midiEvent);
-    if (note == null) {
-        logger.warn(`Could not find note for ${JSON.stringify(midiEvent)}.`);
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        return () => {};
-    }
+    const handleMidiEvent: MidiEventHandler = (midiEvent) => {
+        const noteString = getNoteString(midiEvent.note);
+        if (midiEvent.type === Type.PRESS) {
+            if (active.has(noteString)) {
+                logger.warn(`Already playing ${noteString}.`);
+                return;
+            }
 
-    osc.frequency.value = note;
+            const osc = createOsc();
 
-    logger.debug(`Start playing ${JSON.stringify(midiEvent)}.`);
-    osc.start();
-    return () => {
-        logger.debug(`Stop playing ${JSON.stringify(midiEvent)}.`);
-        osc.stop();
+            const noteFreq = getNoteFreq(midiEvent.note);
+            if (noteFreq == null) {
+                logger.warn(
+                    `Could not find note for ${JSON.stringify(midiEvent)}.`
+                );
+                return;
+            }
+
+            osc.frequency.value = noteFreq;
+
+            active.set(noteString, osc);
+            logger.debug(`Start playing ${JSON.stringify(midiEvent)}.`);
+            osc.start();
+        } else {
+            if (!active.has(noteString)) {
+                logger.warn(`Could not find osc for ${noteString}.`);
+                return;
+            }
+            const osc = active.get(noteString)!;
+            logger.debug(`Stop playing ${JSON.stringify(midiEvent)}.`);
+            active.delete(noteString);
+            osc.stop();
+        }
     };
+
+    return { handleMidiEvent };
 };

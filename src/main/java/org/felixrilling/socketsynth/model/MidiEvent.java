@@ -1,30 +1,39 @@
 package org.felixrilling.socketsynth.model;
 
 public class MidiEvent {
-    private String key;
-    private int octave;
+    private Note note;
+    private Type type;
 
-    public String getKey() {
-        return key;
+    public Note getNote() {
+        return note;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setNote(Note note) {
+        this.note = note;
     }
 
-    public int getOctave() {
-        return octave;
+    public Type getType() {
+        return type;
     }
 
-    public void setOctave(int octave) {
-        this.octave = octave;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     @Override
     public String toString() {
         return "MidiEvent{" +
-                "key='" + key + '\'' +
-                ", octave=" + octave +
+                "note=" + note +
+                ", type=" + type +
                 '}';
+    }
+
+    enum Type {
+        PRESS, RELEASE;
+
+        @Override
+        public String toString() {
+            return name();
+        }
     }
 }

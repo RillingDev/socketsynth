@@ -1,13 +1,12 @@
-import type { MidiEvent } from "./midiEvent";
-
-interface Octave {
+interface OctaveDef {
     [key: string]: number;
 }
 
-type NoteTable = Octave[];
+type NoteFreqTable = OctaveDef[];
 
-const createNoteTable = (): NoteTable => {
-    const noteFreq: NoteTable = [];
+// Based on https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Simple_synth
+const createNoteFreqTable = (): NoteFreqTable => {
+    const noteFreq: NoteFreqTable = [];
     for (let i = 0; i < 9; i++) {
         noteFreq[i] = {};
     }
@@ -28,6 +27,7 @@ const createNoteTable = (): NoteTable => {
     noteFreq[1]["A"] = 55.0;
     noteFreq[1]["A#"] = 58.270470189761239;
     noteFreq[1]["B"] = 61.735412657015513;
+
     noteFreq[2]["C"] = 65.406391325149658;
     noteFreq[2]["C#"] = 69.295657744218024;
     noteFreq[2]["D"] = 73.41619197935189;
@@ -92,6 +92,7 @@ const createNoteTable = (): NoteTable => {
     noteFreq[6]["A"] = 1760.0;
     noteFreq[6]["A#"] = 1864.655046072359665;
     noteFreq[6]["B"] = 1975.533205024496447;
+
     noteFreq[7]["C"] = 2093.004522404789077;
     noteFreq[7]["C#"] = 2217.461047814976769;
     noteFreq[7]["D"] = 2349.318143339260482;
@@ -109,7 +110,15 @@ const createNoteTable = (): NoteTable => {
     return noteFreq;
 };
 
-export const NOTE_TABLE = createNoteTable();
+export const NOTE_FREQ_TABLE = createNoteFreqTable();
 
-export const getNote = (midiEvent: MidiEvent): number | null =>
-    NOTE_TABLE[midiEvent.octave]?.[midiEvent.key] ?? null;
+export interface Note {
+    readonly key: string;
+    readonly octave: number;
+}
+
+export const getNoteFreq = (note: Note): number | null =>
+    NOTE_FREQ_TABLE[note.octave]?.[note.key] ?? null;
+
+export const getNoteString = (note: Note): string =>
+    `${note.key}${note.octave}`;

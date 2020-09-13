@@ -34,7 +34,8 @@ tsconfig.*.tsbuildinfo
 
 # Build Output files
 target
-resources/static/*.js
-resources/static/*.js.map
+main.js
+main.js.map
+main.js.LICENSE.txt
 
 keystore/
