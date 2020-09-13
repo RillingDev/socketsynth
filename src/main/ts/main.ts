@@ -8,7 +8,7 @@ const logger = getLogger("main");
 
 const keyboardContainer = document.getElementById("keyboard")!;
 
-createClient(`ws://${location.host}${location.pathname}ws`)
+createClient(`wss://${location.host}${location.pathname}ws`)
     .then((client) => {
         logger.info("Connected.", client);
         const jsonClient = wrapAsJsonClient<MidiEvent>(client);
