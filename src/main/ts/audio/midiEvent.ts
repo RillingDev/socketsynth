@@ -1,4 +1,4 @@
-import type { Note } from "./note";
+import type { Key } from "./key";
 
 export enum Type {
     PRESS = "PRESS",
@@ -6,6 +6,6 @@ export enum Type {
 }
 
 export interface MidiEvent {
-    readonly note: Note;
+    readonly key: Key;
     readonly type: Type;
 }

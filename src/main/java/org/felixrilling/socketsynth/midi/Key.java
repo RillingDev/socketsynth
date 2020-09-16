@@ -1,15 +1,15 @@
 package org.felixrilling.socketsynth.midi;
 
-public class Note {
-    private String key;
+public class Key {
+    private String tone;
     private int octave;
 
-    public String getKey() {
-        return key;
+    public String getTone() {
+        return tone;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setTone(String tone) {
+        this.tone = tone;
     }
 
     public int getOctave() {
@@ -22,8 +22,8 @@ public class Note {
 
     @Override
     public String toString() {
-        return "Note{" +
-                "key='" + key + '\'' +
+        return "Key{" +
+                "tone='" + tone + '\'' +
                 ", octave=" + octave +
                 '}';
     }

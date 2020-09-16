@@ -1,7 +1,7 @@
 import type { MidiEvent } from "../audio/midiEvent";
 import { Type } from "../audio/midiEvent";
-import type { Note } from "../audio/note";
-import { getNoteString, KEYS } from "../audio/note";
+import type { Key } from "../audio/key";
+import { getKeyString, TONES } from "../audio/key";
 
 interface KeyboardKey {
     readonly element: HTMLElement;
@@ -9,26 +9,26 @@ interface KeyboardKey {
 }
 
 const createKeyboardKeyComponent = (
-    note: Note,
+    key: Key,
     midiEventHandler: (midiEvent: MidiEvent) => void
 ): KeyboardKey => {
     const element = document.createElement("button");
-    element.textContent = getNoteString(note);
+    element.textContent = getKeyString(key);
     element.addEventListener("mousedown", () =>
         midiEventHandler({
-            note,
+            key,
             type: Type.PRESS,
         })
     );
     element.addEventListener("mouseup", () =>
         midiEventHandler({
-            note,
+            key,
             type: Type.RELEASE,
         })
     );
     element.addEventListener("mouseout", () =>
         midiEventHandler({
-            note,
+            key,
             type: Type.RELEASE,
         })
     );
@@ -57,14 +57,14 @@ export const createKeyboardComponent = (
     const keys: Map<string, KeyboardKey> = new Map<string, KeyboardKey>();
 
     for (let octave = startingOctave; octave <= endingOctave; octave++) {
-        for (const key of KEYS) {
-            const note = { key, octave };
+        for (const tone of TONES) {
+            const key = { tone, octave };
             const keyboardKey = createKeyboardKeyComponent(
-                note,
+                key,
                 midiEventHandler
             );
             keyboardKey.element.classList.add("keyboard__key");
-            keys.set(getNoteString(note), keyboardKey);
+            keys.set(getKeyString(key), keyboardKey);
         }
     }
 
@@ -75,13 +75,13 @@ export const createKeyboardComponent = (
     container.append(...keyElements);
 
     const markPlayingStatus = (midiEvent: MidiEvent): void => {
-        const noteString = getNoteString(midiEvent.note);
-        if (!keys.has(noteString)) {
+        const keyString = getKeyString(midiEvent.key);
+        if (!keys.has(keyString)) {
             throw new Error(
-                `Could not find key element for note '${noteString}'.`
+                `Could not find key element for key '${keyString}'.`
             );
         }
-        keys.get(noteString)!.markPlayingStatus(midiEvent.type);
+        keys.get(keyString)!.markPlayingStatus(midiEvent.type);
     };
 
     return {

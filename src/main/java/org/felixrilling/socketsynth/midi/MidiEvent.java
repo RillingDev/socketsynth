@@ -1,15 +1,15 @@
 package org.felixrilling.socketsynth.midi;
 
 public class MidiEvent {
-    private Note note;
+    private Key key;
     private Type type;
 
-    public Note getNote() {
-        return note;
+    public Key getKey() {
+        return key;
     }
 
-    public void setNote(Note note) {
-        this.note = note;
+    public void setKey(Key key) {
+        this.key = key;
     }
 
     public Type getType() {
@@ -23,7 +23,7 @@ public class MidiEvent {
     @Override
     public String toString() {
         return "MidiEvent{" +
-                "note=" + note +
+                "key=" + key +
                 ", type=" + type +
                 '}';
     }
