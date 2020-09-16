@@ -4,7 +4,7 @@ import { createOsc } from "./audioCtx";
 import { getNoteFreq, getNoteString } from "./note";
 import { getLogger } from "../logger";
 
-const logger = getLogger("Synth");
+const logger = getLogger("synth");
 
 type MidiEventHandler = (midiEvent: MidiEvent) => void;
 
@@ -17,7 +17,7 @@ export const createSynth: () => {
         const noteString = getNoteString(midiEvent.note);
         if (midiEvent.type === Type.PRESS) {
             if (active.has(noteString)) {
-                logger.warn(`Already playing ${noteString}.`);
+                logger.warn(`Already playing '${noteString}'.`);
                 return;
             }
 
@@ -25,24 +25,20 @@ export const createSynth: () => {
 
             const noteFreq = getNoteFreq(midiEvent.note);
             if (noteFreq == null) {
-                logger.warn(
-                    `Could not find note for ${JSON.stringify(midiEvent)}.`
-                );
-                return;
+                throw new Error(`Could not find note for '${noteString}'.`);
             }
 
             osc.frequency.value = noteFreq;
 
             active.set(noteString, osc);
-            logger.debug(`Start playing ${JSON.stringify(midiEvent)}.`);
+            logger.debug(`Start playing' ${noteString}'.`);
             osc.start();
         } else {
             if (!active.has(noteString)) {
-                logger.warn(`Could not find osc for ${noteString}.`);
-                return;
+                throw new Error(`Could not find osc for '${noteString}'.`);
             }
             const osc = active.get(noteString)!;
-            logger.debug(`Stop playing ${JSON.stringify(midiEvent)}.`);
+            logger.debug(`Stop playing '${noteString}'.`);
             active.delete(noteString);
             osc.stop();
         }

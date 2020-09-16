@@ -1,5 +1,3 @@
-
-
 .keyboard {
     --key-height: 8.5rem;
     --key-width: 2.5rem;
@@ -33,10 +31,9 @@
         background-color: #eee;
     }
 
-    &:active {
+    &[data-playing] {
         background-color: #ddd;
     }
-
 }
 
 .keyboard__key:nth-child(12n + 2),
@@ -53,13 +50,11 @@
     background-color: #555;
     color: #fff;
 
-
     &:hover {
         background-color: #666;
     }
 
-    &:active {
+    &[data-playing] {
         background-color: #777;
     }
-
 }
