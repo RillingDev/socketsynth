@@ -1,16 +1,31 @@
 import type { MidiEvent } from "./midiEvent";
 import { Type } from "./midiEvent";
-import { createOsc } from "./audioCtx";
 import { getNoteFreq, getNoteString } from "./note";
 import { getLogger } from "../logger";
+import { getAudioCtx } from "./audioCtx";
 
 const logger = getLogger("synth");
 
+export type OscModifier = (
+    osc: OscillatorNode,
+    audioCtx: AudioContext,
+    gainNode: GainNode
+) => void;
+
+const createOsc = (mod: OscModifier): OscillatorNode => {
+    const [audioCtx, gainNode] = getAudioCtx();
+    const osc = audioCtx.createOscillator();
+    mod(osc, audioCtx, gainNode);
+    return osc;
+};
+
 type MidiEventHandler = (midiEvent: MidiEvent) => void;
 
-export const createSynth: () => {
-    handleMidiEvent: MidiEventHandler;
-} = () => {
+export interface Synth {
+    readonly handleMidiEvent: MidiEventHandler;
+}
+
+export const createSynth = (oscMod: OscModifier): Synth => {
     const active = new Map<string, OscillatorNode>();
 
     const handleMidiEvent: MidiEventHandler = (midiEvent) => {
@@ -21,8 +36,7 @@ export const createSynth: () => {
                 return;
             }
 
-            const osc = createOsc();
-
+            const osc = createOsc(oscMod);
             osc.frequency.value = getNoteFreq(midiEvent.note);
 
             active.set(noteString, osc);
@@ -44,3 +58,4 @@ export const createSynth: () => {
 
     return { handleMidiEvent };
 };
+export { createOsc };

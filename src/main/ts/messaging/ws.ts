@@ -24,8 +24,11 @@ export const createClient = (url: string): Promise<Client> =>
     });
 
 export interface JsonClient<T> {
-    publish: (destination: string, data: T) => void;
-    subscribe: (destination: string, callback: (data: T) => void) => void;
+    readonly publish: (destination: string, data: T) => void;
+    readonly subscribe: (
+        destination: string,
+        callback: (data: T) => void
+    ) => void;
 }
 
 export const wrapAsJsonClient = <T>(client: Client): JsonClient<T> => {

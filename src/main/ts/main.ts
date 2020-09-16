@@ -4,13 +4,14 @@ import { createClient, wrapAsJsonClient } from "./messaging/ws";
 import type { MidiEvent } from "./audio/midiEvent";
 import { createSynth } from "./audio/synth";
 import { createKeyboardComponent } from "./dom/keyboard";
+import { sineOscMod } from "./audio/oscMods";
 
 const logger = getLogger("main");
 
 const keyboardContainer = document.getElementById("keyboard")!;
 
 const main = (client: JsonClient<MidiEvent>): void => {
-    const synth = createSynth();
+    const synth = createSynth(sineOscMod);
     const keyboard = createKeyboardComponent(
         keyboardContainer,
         2,
