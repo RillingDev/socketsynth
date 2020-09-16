@@ -14,24 +14,23 @@ const createKeyboardKeyComponent = (
 ): KeyboardKey => {
     const element = document.createElement("button");
     element.textContent = getKeyString(key);
-    element.addEventListener("mousedown", () =>
+
+    const pressEventHandler = (): void =>
         midiEventHandler({
             key,
             type: Type.PRESS,
-        })
-    );
-    element.addEventListener("mouseup", () =>
-        midiEventHandler({
-            key,
-            type: Type.RELEASE,
-        })
-    );
-    element.addEventListener("mouseout", () =>
-        midiEventHandler({
-            key,
-            type: Type.RELEASE,
-        })
-    );
+        });
+    const releaseEventHandler = (): void => {
+        if (element.dataset["playing"] === "true") {
+            midiEventHandler({
+                key,
+                type: Type.RELEASE,
+            });
+        }
+    };
+    element.addEventListener("mousedown", pressEventHandler);
+    element.addEventListener("mouseup", releaseEventHandler);
+    element.addEventListener("mouseout", releaseEventHandler);
 
     const markPlayingStatus = (type: Type): void => {
         if (type === Type.PRESS) {
@@ -41,6 +40,7 @@ const createKeyboardKeyComponent = (
             delete element.dataset["playing"];
         }
     };
+
     return { element, markPlayingStatus };
 };
 
