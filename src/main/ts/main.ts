@@ -1,16 +1,16 @@
 import { getLogger } from "./logger";
-import type { JsonClient } from "./messaging/ws";
-import { createClient, wrapAsJsonClient } from "./messaging/ws";
-import type { MidiEvent } from "./audio/midiEvent";
+import { createStompClient } from "./messaging/stompClient";
 import type { OscModifier } from "./audio/synth";
 import { createSynth } from "./audio/synth";
 import { createKeyboardComponent } from "./dom/keyboard";
 import { bassOscMod, leadOscMod, sineOscMod } from "./audio/oscMods";
+import type { MidiEventClient } from "./messaging/midiEventClient";
+import { createDelegatingMidiEventClient } from "./messaging/midiEventClient";
 
 const logger = getLogger("main");
 
 const bindSocketSynth = (
-    client: JsonClient<MidiEvent>,
+    client: MidiEventClient,
     keyboardContainer: HTMLElement,
     channel: number,
     oscMod: OscModifier,
@@ -22,12 +22,10 @@ const bindSocketSynth = (
         keyboardContainer,
         startingOctave,
         endingOctave,
-        (midiEvent) => {
-            client.publish(`/app/midi/input/${channel}`, midiEvent);
-        }
+        (midiEvent) => client.publish(channel, midiEvent)
     );
 
-    client.subscribe(`/topic/midi/output/${channel}`, (midiEvent) => {
+    client.subscribe(channel, (midiEvent) => {
         synth.handleMidiEvent(midiEvent);
         keyboard.markPlayingStatus(midiEvent);
     });
@@ -37,10 +35,10 @@ const keyboard1Container = document.getElementById("keyboard1")!;
 const keyboard2Container = document.getElementById("keyboard2")!;
 const keyboard3Container = document.getElementById("keyboard3")!;
 
-createClient(`wss://${location.host}${location.pathname}ws`)
+createStompClient(`wss://${location.host}${location.pathname}ws`)
     .then((rawClient) => {
         logger.info("Connected.", rawClient);
-        const client = wrapAsJsonClient<MidiEvent>(rawClient);
+        const client = createDelegatingMidiEventClient(rawClient);
         bindSocketSynth(client, keyboard1Container, 1, sineOscMod, 2, 6);
         bindSocketSynth(client, keyboard2Container, 2, leadOscMod, 4, 6);
         bindSocketSynth(client, keyboard3Container, 3, bassOscMod, 1, 3);
