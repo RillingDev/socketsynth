@@ -2,7 +2,12 @@
 
 Realtime collaborative synthesizer using websockets.
 
-## Usage
+## How Does it Work?
+
+On the page, click one of the keys to create a sound. Ot her people which have the page open will hear that sound.
+When other people press a key, you will hear it as well.
+
+## Development
 
 ### Requirements
 
@@ -10,5 +15,5 @@ Realtime collaborative synthesizer using websockets.
 - JDK >= 11
 
 ### HTTPS
-TODO
-<https://www.baeldung.com/spring-boot-https-self-signed-certificate>
+
+Create a keystore with a self-signed certificate (<https://www.baeldung.com/spring-boot-https-self-signed-certificate>) and adapt the application.properties parameters.
