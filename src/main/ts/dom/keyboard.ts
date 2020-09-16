@@ -26,6 +26,12 @@ const createKeyboardKeyComponent = (
             type: Type.RELEASE,
         })
     );
+    element.addEventListener("mouseout", () =>
+        midiEventHandler({
+            note,
+            type: Type.RELEASE,
+        })
+    );
 
     const markPlayingStatus = (type: Type): void => {
         if (type === Type.PRESS) {
