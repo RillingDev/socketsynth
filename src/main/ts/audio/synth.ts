@@ -1,4 +1,4 @@
-import type { MidiEvent } from "./midiEvent";
+import type { MidiEventHandler } from "./midiEvent";
 import { Type } from "./midiEvent";
 import { getKeyFreq, getKeyString } from "./key";
 import { getLogger } from "../logger";
@@ -18,8 +18,6 @@ const createOsc = (mod: OscModifier): OscillatorNode => {
     mod(osc, audioCtx, gainNode);
     return osc;
 };
-
-type MidiEventHandler = (midiEvent: MidiEvent) => void;
 
 export interface Synth {
     readonly handleMidiEvent: MidiEventHandler;

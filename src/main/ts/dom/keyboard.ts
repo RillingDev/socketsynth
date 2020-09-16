@@ -1,4 +1,4 @@
-import type { MidiEvent } from "../audio/midiEvent";
+import type { MidiEvent, MidiEventHandler } from "../audio/midiEvent";
 import { Type } from "../audio/midiEvent";
 import type { Key } from "../audio/key";
 import { getKeyString, TONES } from "../audio/key";
@@ -10,7 +10,7 @@ interface KeyboardKey {
 
 const createKeyboardKeyComponent = (
     key: Key,
-    midiEventHandler: (midiEvent: MidiEvent) => void
+    midiEventHandler: MidiEventHandler
 ): KeyboardKey => {
     const element = document.createElement("button");
     element.textContent = getKeyString(key);
@@ -52,7 +52,7 @@ export const createKeyboardComponent = (
     container: HTMLElement,
     startingOctave: number,
     endingOctave: number,
-    midiEventHandler: (midiEvent: MidiEvent) => void
+    midiEventHandler: MidiEventHandler
 ): Keyboard => {
     const keys: Map<string, KeyboardKey> = new Map<string, KeyboardKey>();
 
