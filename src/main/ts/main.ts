@@ -9,10 +9,6 @@ import { bassOscMod, leadOscMod, sineOscMod } from "./audio/oscMods";
 
 const logger = getLogger("main");
 
-const keyboard1Container = document.getElementById("keyboard1")!;
-const keyboard2Container = document.getElementById("keyboard2")!;
-const keyboard3Container = document.getElementById("keyboard3")!;
-
 const bindSocketSynth = (
     client: JsonClient<MidiEvent>,
     keyboardContainer: HTMLElement,
@@ -36,6 +32,10 @@ const bindSocketSynth = (
         keyboard.markPlayingStatus(midiEvent);
     });
 };
+
+const keyboard1Container = document.getElementById("keyboard1")!;
+const keyboard2Container = document.getElementById("keyboard2")!;
+const keyboard3Container = document.getElementById("keyboard3")!;
 
 createClient(`wss://${location.host}${location.pathname}ws`)
     .then((rawClient) => {

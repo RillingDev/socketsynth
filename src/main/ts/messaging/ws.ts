@@ -8,9 +8,6 @@ export const createClient = (url: string): Promise<Client> =>
         const client = new Client({
             // eslint-disable-next-line @typescript-eslint/naming-convention
             brokerURL: url,
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
         });
 
         client.onConnect = () => resolve(client);
