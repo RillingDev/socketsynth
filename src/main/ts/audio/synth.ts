@@ -23,19 +23,17 @@ export const createSynth: () => {
 
             const osc = createOsc();
 
-            const noteFreq = getNoteFreq(midiEvent.note);
-            if (noteFreq == null) {
-                throw new Error(`Could not find note for '${noteString}'.`);
-            }
-
-            osc.frequency.value = noteFreq;
+            osc.frequency.value = getNoteFreq(midiEvent.note);
 
             active.set(noteString, osc);
             logger.debug(`Start playing' ${noteString}'.`);
             osc.start();
         } else {
             if (!active.has(noteString)) {
-                throw new Error(`Could not find osc for '${noteString}'.`);
+                logger.info(
+                    `Could not find osc for '${noteString}', skipping.`
+                );
+                return;
             }
             const osc = active.get(noteString)!;
             logger.debug(`Stop playing '${noteString}'.`);

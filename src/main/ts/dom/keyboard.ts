@@ -1,7 +1,7 @@
 import type { MidiEvent } from "../audio/midiEvent";
 import { Type } from "../audio/midiEvent";
 import type { Note } from "../audio/note";
-import { getNoteString, NOTE_FREQ_TABLE } from "../audio/note";
+import { getNoteString, KEYS } from "../audio/note";
 
 interface KeyboardKey {
     readonly element: HTMLElement;
@@ -51,7 +51,7 @@ export const createKeyboardComponent = (
     const keys: Map<string, KeyboardKey> = new Map<string, KeyboardKey>();
 
     for (let octave = startingOctave; octave <= endingOctave; octave++) {
-        for (const key of Object.keys(NOTE_FREQ_TABLE[octave])) {
+        for (const key of KEYS) {
             const note = { key, octave };
             const keyboardKey = createKeyboardKeyComponent(
                 note,
