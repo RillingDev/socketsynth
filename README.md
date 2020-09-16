@@ -4,7 +4,7 @@ Realtime collaborative synthesizer using websockets.
 
 ## How Does it Work?
 
-On the page, click one of the keys to create a sound. Ot her people which have the page open will hear that sound.
+On the page, click one of the keys to create a sound. Other people which have the page open will hear that sound.
 When other people press a key, you will hear it as well.
 
 ## Development
