@@ -2,17 +2,22 @@
 
 Realtime collaborative synthesizer using websockets.
 
-## How Does it Work?
+## Architecture
 
-On the page, click one of the keys to create a sound. Other people which have the page open will hear that sound.
-When other people press a key, you will hear it as well.
+### Backend
+
+The backend is a rather simple Spring Boot project that takes websocket requests and broadcasts them to all browsers.
+
+### Frontend
+
+The frontend uses Stomp.js to handle websocket communication. When a user presses a key, a websocket event is published containing data about which key was pressed. If the websocket subscription receives an event, the browser plays the corresponding note.
 
 ## Development
 
 ### Requirements
 
-- Node.js >= 12
-- JDK >= 11
+-   Node.js >= 12
+-   JDK >= 11
 
 ### HTTPS
 
