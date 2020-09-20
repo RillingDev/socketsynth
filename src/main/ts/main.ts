@@ -3,7 +3,11 @@ import { createStompClient } from "./messaging/stompClient";
 import type { Synth } from "./audio/synth";
 import { createSynth } from "./audio/synth";
 import { createKeyboardComponent } from "./dom/keyboard";
-import { bassOscMod, leadOscMod, sineOscMod } from "./audio/oscMods";
+import {
+    bassOscFactory,
+    leadOscFactory,
+    sineOscFactory,
+} from "./audio/oscFactory";
 import type { MidiEventClient } from "./messaging/midiEventClient";
 import { createDelegatingMidiEventClient } from "./messaging/midiEventClient";
 
@@ -38,7 +42,7 @@ createStompClient(`wss://${location.host}${location.pathname}ws`)
         bindSocketSynth(
             client,
             1,
-            createSynth(sineOscMod),
+            createSynth(sineOscFactory),
             document.getElementById("keyboard1")!,
             2,
             6
@@ -46,7 +50,7 @@ createStompClient(`wss://${location.host}${location.pathname}ws`)
         bindSocketSynth(
             client,
             2,
-            createSynth(leadOscMod),
+            createSynth(leadOscFactory),
             document.getElementById("keyboard2")!,
             4,
             6
@@ -54,7 +58,7 @@ createStompClient(`wss://${location.host}${location.pathname}ws`)
         bindSocketSynth(
             client,
             3,
-            createSynth(bassOscMod),
+            createSynth(bassOscFactory),
             document.getElementById("keyboard3")!,
             1,
             3

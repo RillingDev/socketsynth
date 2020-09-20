@@ -3,27 +3,22 @@ import { Type } from "./midiEvent";
 import { getKeyFreq, getKeyString } from "./key";
 import { getLogger } from "../logger";
 import { getAudioCtx } from "./audioCtx";
+import type { OscFactory } from "./oscFactory";
 
 const logger = getLogger("synth");
 
-export type OscModifier = (
-    osc: OscillatorNode,
-    audioCtx: AudioContext,
-    gainNode: GainNode
-) => void;
-
-const createOsc = (mod: OscModifier): OscillatorNode => {
+const createOsc = (oscFactory: OscFactory): OscillatorNode => {
     const [audioCtx, gainNode] = getAudioCtx();
-    const osc = audioCtx.createOscillator();
-    mod(osc, audioCtx, gainNode);
-    return osc;
+    const [oscNode, outputNode] = oscFactory(audioCtx);
+    outputNode.connect(gainNode);
+    return oscNode;
 };
 
 export interface Synth {
     readonly handleMidiEvent: MidiEventHandler;
 }
 
-export const createSynth = (oscMod: OscModifier): Synth => {
+export const createSynth = (oscFactory: OscFactory): Synth => {
     const active = new Map<string, OscillatorNode>();
 
     const handleMidiEvent: MidiEventHandler = (midiEvent) => {
@@ -34,7 +29,7 @@ export const createSynth = (oscMod: OscModifier): Synth => {
                 return;
             }
 
-            const osc = createOsc(oscMod);
+            const osc = createOsc(oscFactory);
             osc.frequency.value = getKeyFreq(midiEvent.key);
 
             active.set(keyString, osc);
