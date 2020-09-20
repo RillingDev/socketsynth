@@ -3,15 +3,15 @@ import { Type } from "../audio/midiEvent";
 import type { Key } from "../audio/key";
 import { getKeyString, TONES } from "../audio/key";
 
-interface KeyboardKey {
+interface PianoKey {
     readonly element: HTMLElement;
     readonly markPlayingStatus: (type: Type) => void;
 }
 
-const createKeyboardKeyComponent = (
+const createPianoKeyComponent = (
     key: Key,
     midiEventHandler: MidiEventHandler
-): KeyboardKey => {
+): PianoKey => {
     const element = document.createElement("button");
     element.textContent = getKeyString(key);
 
@@ -44,33 +44,30 @@ const createKeyboardKeyComponent = (
     return { element, markPlayingStatus };
 };
 
-interface Keyboard {
+interface Piano {
     readonly markPlayingStatus: (midiEvent: MidiEvent) => void;
 }
 
-export const createKeyboardComponent = (
+const STARTING_OCTAVE = 2;
+const ENDING_OCTAVE = 6;
+export const createPianoComponent = (
     container: HTMLElement,
-    startingOctave: number,
-    endingOctave: number,
     midiEventHandler: MidiEventHandler
-): Keyboard => {
-    const keys: Map<string, KeyboardKey> = new Map<string, KeyboardKey>();
+): Piano => {
+    const keys: Map<string, PianoKey> = new Map<string, PianoKey>();
 
-    for (let octave = startingOctave; octave <= endingOctave; octave++) {
+    for (let octave = STARTING_OCTAVE; octave <= ENDING_OCTAVE; octave++) {
         for (const tone of TONES) {
             const key = { tone, octave };
-            const keyboardKey = createKeyboardKeyComponent(
-                key,
-                midiEventHandler
-            );
-            keyboardKey.element.classList.add("keyboard__key");
-            keys.set(getKeyString(key), keyboardKey);
+            const pianoKey = createPianoKeyComponent(key, midiEventHandler);
+            pianoKey.element.classList.add("piano__key");
+            keys.set(getKeyString(key), pianoKey);
         }
     }
 
-    container.classList.add("keyboard");
+    container.classList.add("piano");
     const keyElements = Array.from(keys.values()).map(
-        (keyboardKey) => keyboardKey.element
+        (pianoKey) => pianoKey.element
     );
     container.append(...keyElements);
 

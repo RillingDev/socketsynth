@@ -2,7 +2,7 @@ import { getLogger } from "./logger";
 import { createStompClient } from "./messaging/stompClient";
 import type { Synth } from "./audio/synth";
 import { createSynth } from "./audio/synth";
-import { createKeyboardComponent } from "./dom/keyboard";
+import { createPianoComponent } from "./dom/piano";
 import {
     bassOscFactory,
     leadOscFactory,
@@ -13,24 +13,27 @@ import { createDelegatingMidiEventClient } from "./messaging/midiEventClient";
 
 const logger = getLogger("main");
 
+const pianoContainer1 = document.getElementById("piano1")!;
+const pianoContainer2 = document.getElementById("piano2")!;
+const pianoContainer3 = document.getElementById("piano3")!;
+
+const synth1 = createSynth(sineOscFactory);
+const synth2 = createSynth(leadOscFactory);
+const synth3 = createSynth(bassOscFactory);
+
 const bindSocketSynth = (
     client: MidiEventClient,
     channel: number,
     synth: Synth,
-    keyboardContainer: HTMLElement,
-    startingOctave: number,
-    endingOctave: number
+    pianoContainer: HTMLElement
 ): void => {
-    const keyboard = createKeyboardComponent(
-        keyboardContainer,
-        startingOctave,
-        endingOctave,
-        (midiEvent) => client.publish(channel, midiEvent)
+    const piano = createPianoComponent(pianoContainer, (midiEvent) =>
+        client.publish(channel, midiEvent)
     );
 
     client.subscribe(channel, (midiEvent) => {
         synth.handleMidiEvent(midiEvent);
-        keyboard.markPlayingStatus(midiEvent);
+        piano.markPlayingStatus(midiEvent);
     });
 };
 
@@ -39,30 +42,9 @@ createStompClient(`wss://${location.host}${location.pathname}ws`)
         logger.info("Connected.", rawClient);
         const client = createDelegatingMidiEventClient(rawClient);
 
-        bindSocketSynth(
-            client,
-            1,
-            createSynth(sineOscFactory),
-            document.getElementById("keyboard1")!,
-            2,
-            6
-        );
-        bindSocketSynth(
-            client,
-            2,
-            createSynth(leadOscFactory),
-            document.getElementById("keyboard2")!,
-            4,
-            6
-        );
-        bindSocketSynth(
-            client,
-            3,
-            createSynth(bassOscFactory),
-            document.getElementById("keyboard3")!,
-            1,
-            3
-        );
+        bindSocketSynth(client, 1, synth1, pianoContainer1);
+        bindSocketSynth(client, 2, synth2, pianoContainer2);
+        bindSocketSynth(client, 3, synth3, pianoContainer3);
 
         logger.info("Bound all synths.");
     })
