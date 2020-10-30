@@ -7,7 +7,6 @@ module.exports = {
         filename: "main.js",
         path: resolve(__dirname, "src/main/resources/static"),
     },
-    mode: process.env.NODE_ENV,
     module: {
         rules: [
             {
@@ -22,5 +21,4 @@ module.exports = {
     optimization: {
         minimizer: [new TerserPlugin()],
     },
-    devtool: "source-map",
 };
