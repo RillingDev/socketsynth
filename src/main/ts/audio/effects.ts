@@ -12,10 +12,10 @@ export const createReverbNode = (
 		frequency: lpCutoff,
 	});
 
-	const gain = audioCtx.createGain();
+	const gain = new GainNode(audioCtx);
 	gain.gain.setValueAtTime(delayWet, audioCtx.currentTime);
 
-	const node = audioCtx.createGain();
+	const node = new GainNode(audioCtx);
 	node.connect(delay).connect(lowPass).connect(gain).connect(node);
 	return node;
 };
