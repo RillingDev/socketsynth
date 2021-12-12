@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>SocketSynth</title>
-        <link rel="stylesheet" href="main.css" />
-    </head>
-    <body>
-        <div class="intro">
-            <h1>SocketSynth</h1>
-            <p>Realtime collaborative synthesizer using websockets.</p>
-            <a href="https://github.com/FelixRilling/socketsynth">GitHub</a>
-            <h2>How Does it Work?</h2>
-            <p>
-                On the page, click one of the keys to create a sound. Other
-                people which have the page open will hear that sound. When other
-                people press a key, you will hear it as well.
-            </p>
-            <p>
-                You can use your keyboard to press keys as well; Use the select
-                below and choose a channel, then use number + letter keys to
-                make sounds. Works best with a QWERTY layout.
-            </p>
-        </div>
+	<head>
+		<meta charset="UTF-8" />
+		<title>SocketSynth</title>
+		<link rel="stylesheet" href="main.css" />
+	</head>
+	<body>
+		<div class="intro">
+			<h1>SocketSynth</h1>
+			<p>Realtime collaborative synthesizer using websockets.</p>
+			<a href="https://github.com/FelixRilling/socketsynth">GitHub</a>
+			<h2>How Does it Work?</h2>
+			<p>
+				On the page, click one of the keys to create a sound. Other
+				people which have the page open will hear that sound. When other
+				people press a key, you will hear it as well.
+			</p>
+			<p>
+				You can use your keyboard to press keys as well; Use the select
+				below and choose a channel, then use number + letter keys to
+				make sounds. Works best with a QWERTY layout.
+			</p>
+		</div>
 
-        <div>
-            <label for="keyboardChannel">Channel for keyboard controls:</label>
-            <select id="keyboardChannel">
-                <option value="" selected>Disabled</option>
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-            </select>
-        </div>
+		<div>
+			<label for="keyboardChannel">Channel for keyboard controls:</label>
+			<select id="keyboardChannel">
+				<option value="" selected>Disabled</option>
+				<option value="1">1</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+			</select>
+		</div>
 
-        <div class="piano__wrapper">
-            <h1>Simple Osc (Channel 1)</h1>
-            <div id="piano1"></div>
-        </div>
-        <div class="piano__wrapper">
-            <h1>Lead Osc (Channel 2)</h1>
-            <div id="piano2"></div>
-        </div>
-        <div class="piano__wrapper">
-            <h1>Bass Osc (Channel 3)</h1>
-            <div id="piano3"></div>
-        </div>
+		<div class="piano__wrapper">
+			<h1>Simple Osc (Channel 1)</h1>
+			<div id="piano1"></div>
+		</div>
+		<div class="piano__wrapper">
+			<h1>Lead Osc (Channel 2)</h1>
+			<div id="piano2"></div>
+		</div>
+		<div class="piano__wrapper">
+			<h1>Bass Osc (Channel 3)</h1>
+			<div id="piano3"></div>
+		</div>
 
-        <script src="main.js"></script>
-    </body>
+		<script src="main.js"></script>
+	</body>
 </html>

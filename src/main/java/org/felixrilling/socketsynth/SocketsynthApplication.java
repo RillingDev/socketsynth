@@ -8,8 +8,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 @EnableConfigurationProperties(AppProperties.class)
 public class SocketsynthApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(SocketsynthApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(SocketsynthApplication.class, args);
+	}
 
 }

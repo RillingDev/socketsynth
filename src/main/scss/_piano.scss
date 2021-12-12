@@ -1,43 +1,43 @@
 .piano__wrapper {
-    margin-bottom: 1rem;
+	margin-bottom: 1rem;
 }
 
 .piano {
-    --key-height: 8.5rem;
-    --key-width: 2.5rem;
-    --key-alt-height: calc(var(--key-height) * 0.666);
-    --key-alt-width: calc(var(--key-width) * 0.666);
+	--key-height: 8.5rem;
+	--key-width: 2.5rem;
+	--key-alt-height: calc(var(--key-height) * 0.666);
+	--key-alt-width: calc(var(--key-width) * 0.666);
 
-    display: flex;
-    position: relative;
-    overflow-x: auto;
-    max-width: 100%;
-    height: var(--key-height);
+	display: flex;
+	position: relative;
+	overflow-x: auto;
+	max-width: 100%;
+	height: var(--key-height);
 }
 
 .piano__key {
-    flex: 0 0 auto;
-    height: 100%;
-    width: var(--key-width);
-    padding: 0.25rem;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
+	flex: 0 0 auto;
+	height: 100%;
+	width: var(--key-width);
+	padding: 0.25rem;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	position: relative;
+	z-index: 1;
 
-    cursor: pointer;
-    font-size: 0.675em;
-    border: 1px solid #666;
-    background-color: #fff;
+	cursor: pointer;
+	font-size: 0.675em;
+	border: 1px solid #666;
+	background-color: #fff;
 
-    &:hover {
-        background-color: #eee;
-    }
+	&:hover {
+		background-color: #eee;
+	}
 
-    &[data-playing] {
-        background-color: #ddd;
-    }
+	&[data-playing] {
+		background-color: #ddd;
+	}
 }
 
 .piano__key:nth-child(12n + 2),
@@ -45,20 +45,20 @@
 .piano__key:nth-child(12n + 7),
 .piano__key:nth-child(12n + 9),
 .piano__key:nth-child(12n + 11) {
-    margin-left: calc(var(--key-alt-width) * -0.5);
-    margin-right: calc(var(--key-alt-width) * -0.5);
-    height: 66.666%;
-    width: var(--key-alt-width);
-    z-index: 2;
+	margin-left: calc(var(--key-alt-width) * -0.5);
+	margin-right: calc(var(--key-alt-width) * -0.5);
+	height: 66.666%;
+	width: var(--key-alt-width);
+	z-index: 2;
 
-    background-color: #555;
-    color: #fff;
+	background-color: #555;
+	color: #fff;
 
-    &:hover {
-        background-color: #666;
-    }
+	&:hover {
+		background-color: #666;
+	}
 
-    &[data-playing] {
-        background-color: #777;
-    }
+	&[data-playing] {
+		background-color: #777;
+	}
 }

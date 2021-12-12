@@ -10,12 +10,12 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class MidiController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MidiController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MidiController.class);
 
-    @MessageMapping("/midi/input/{channel}")
-    @SendTo("/topic/midi/output/{channel}")
-    public MidiEvent input(MidiEvent event, @DestinationVariable("channel") String channel) {
-        logger.info("Received event '{}' on channel '{}'.", event, channel);
-        return event;
-    }
+	@MessageMapping("/midi/input/{channel}")
+	@SendTo("/topic/midi/output/{channel}")
+	public MidiEvent input(MidiEvent event, @DestinationVariable("channel") String channel) {
+		logger.info("Received event '{}' on channel '{}'.", event, channel);
+		return event;
+	}
 }

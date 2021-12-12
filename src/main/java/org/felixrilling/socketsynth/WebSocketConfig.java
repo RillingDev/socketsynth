@@ -12,27 +12,26 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final AppProperties appProperties;
+	private final AppProperties appProperties;
 
-    public WebSocketConfig(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
+	public WebSocketConfig(AppProperties appProperties) {
+		this.appProperties = appProperties;
+	}
 
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
-        config.setApplicationDestinationPrefixes("/app");
-    }
+	@Override
+	public void configureMessageBroker(MessageBrokerRegistry config) {
+		config.enableSimpleBroker("/topic");
+		config.setApplicationDestinationPrefixes("/app");
+	}
 
-    @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        StompWebSocketEndpointRegistration endpoint = registry
-                .addEndpoint("/ws");
+	@Override
+	public void registerStompEndpoints(StompEndpointRegistry registry) {
+		StompWebSocketEndpointRegistration endpoint = registry.addEndpoint("/ws");
 
-        if (appProperties.getWsOrigin() != null) {
-            // https://stackoverflow.com/questions/32874421/websocket-in-spring-boot-app-getting-403-forbidden
-            endpoint.setAllowedOrigins(appProperties.getWsOrigin());
-        }
-    }
+		if (appProperties.getWsOrigin() != null) {
+			// https://stackoverflow.com/questions/32874421/websocket-in-spring-boot-app-getting-403-forbidden
+			endpoint.setAllowedOrigins(appProperties.getWsOrigin());
+		}
+	}
 
 }
