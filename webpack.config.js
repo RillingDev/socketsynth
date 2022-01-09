@@ -21,4 +21,5 @@ module.exports = {
 	optimization: {
 		minimizer: [new TerserPlugin()],
 	},
+	devtool: "inline-source-map",
 };
