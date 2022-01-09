@@ -1,13 +1,8 @@
 import type { Client } from "@stomp/stompjs";
 import { getLogger } from "../logger";
-import type { MidiEvent } from "../audio/midiEvent";
-import { Type } from "../audio/midiEvent";
+import type { Midi } from "../audio/midi";
+import { MidiCommand } from "../audio/midi";
 import { TONES } from "../audio/key";
-
-enum MidiCommand {
-	NOTE_ON = 0,
-	NOTE_OFF = 1,
-}
 
 interface MidiChannelMessage {
 	readonly command: MidiCommand;
@@ -60,24 +55,19 @@ const deserializeMidi = (rawMidiMessage: Uint8Array): MidiChannelMessage => {
 };
 
 export interface MidiEventClient {
-	readonly publish: (channel: number, data: MidiEvent) => void;
+	readonly publish: (channel: number, data: Midi) => void;
 	readonly subscribe: (
 		channel: number,
-		callback: (data: MidiEvent) => void
+		callback: (data: Midi) => void
 	) => void;
 }
 
-const midiMessageToEvent = (
-	midiChannelMessage: MidiChannelMessage
-): MidiEvent => {
+const midiMessageToEvent = (midiChannelMessage: MidiChannelMessage): Midi => {
 	const toneNum = midiChannelMessage.note % 12;
 	const tone = TONES[toneNum];
 	const octave = (midiChannelMessage.note - toneNum - 12) / 12;
 	return {
-		type:
-			midiChannelMessage.command == MidiCommand.NOTE_ON
-				? Type.PRESS
-				: Type.RELEASE,
+		command: midiChannelMessage.command,
 		key: {
 			octave,
 			tone,
@@ -86,15 +76,12 @@ const midiMessageToEvent = (
 };
 
 const midiEventToMessage = (
-	data: MidiEvent,
+	data: Midi,
 	channel: number
 ): MidiChannelMessage => {
 	const note = 12 + data.key.octave * 12 + TONES.indexOf(data.key.tone);
 	return {
-		command:
-			data.type == Type.PRESS
-				? MidiCommand.NOTE_ON
-				: MidiCommand.NOTE_OFF,
+		command: data.command,
 		channel,
 		note,
 	};
@@ -105,7 +92,7 @@ export const createDelegatingMidiEventClient = (
 ): MidiEventClient => {
 	const logger = getLogger("DelegatingMidiEventClient");
 	return {
-		publish: (channel: number, data: MidiEvent) => {
+		publish: (channel: number, data: Midi) => {
 			const midiChannelMessage = midiEventToMessage(data, channel);
 			logger.debug(
 				`Publishing on '${channel}': ${JSON.stringify(
@@ -117,7 +104,7 @@ export const createDelegatingMidiEventClient = (
 				binaryBody: serializeMidi(midiChannelMessage),
 			});
 		},
-		subscribe: (channel: number, callback: (data: MidiEvent) => void) => {
+		subscribe: (channel: number, callback: (data: Midi) => void) => {
 			logger.debug(`Listening on '${channel}'.`);
 			client.subscribe("/topic/midi/output", (frame) => {
 				const midiChannelMessage = deserializeMidi(frame.binaryBody);

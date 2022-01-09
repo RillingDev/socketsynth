@@ -1,11 +1,11 @@
-import type { MidiEvent, MidiEventHandler } from "../audio/midiEvent";
-import { Type } from "../audio/midiEvent";
+import type { Midi, MidiEventHandler } from "../audio/midi";
 import type { Key } from "../audio/key";
 import { getKeyString, TONES } from "../audio/key";
+import { MidiCommand } from "../audio/midi";
 
 interface PianoKey {
 	readonly element: HTMLElement;
-	readonly markPlayingStatus: (type: Type) => void;
+	readonly markPlayingStatus: (type: MidiCommand) => void;
 }
 
 const createPianoKeyComponent = (
@@ -18,13 +18,13 @@ const createPianoKeyComponent = (
 	const pressEventHandler = (): void =>
 		midiEventHandler({
 			key,
-			type: Type.PRESS,
+			command: MidiCommand.NOTE_ON,
 		});
 	const releaseEventHandler = (): void => {
 		if (element.dataset["playing"] === "true") {
 			midiEventHandler({
 				key,
-				type: Type.RELEASE,
+				command: MidiCommand.NOTE_OFF,
 			});
 		}
 	};
@@ -32,8 +32,8 @@ const createPianoKeyComponent = (
 	element.addEventListener("mouseup", releaseEventHandler);
 	element.addEventListener("mouseout", releaseEventHandler);
 
-	const markPlayingStatus = (type: Type): void => {
-		if (type === Type.PRESS) {
+	const markPlayingStatus = (type: MidiCommand): void => {
+		if (type === MidiCommand.NOTE_ON) {
 			element.dataset["playing"] = "true";
 		} else {
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
@@ -45,7 +45,7 @@ const createPianoKeyComponent = (
 };
 
 interface Piano {
-	readonly markPlayingStatus: (midiEvent: MidiEvent) => void;
+	readonly markPlayingStatus: (midiEvent: Midi) => void;
 }
 
 const STARTING_OCTAVE = 2;
@@ -71,14 +71,14 @@ export const createPianoComponent = (
 	);
 	container.append(...keyElements);
 
-	const markPlayingStatus = (midiEvent: MidiEvent): void => {
+	const markPlayingStatus = (midiEvent: Midi): void => {
 		const keyString = getKeyString(midiEvent.key);
 		if (!keys.has(keyString)) {
 			throw new Error(
 				`Could not find key element for key '${keyString}'.`
 			);
 		}
-		keys.get(keyString)!.markPlayingStatus(midiEvent.type);
+		keys.get(keyString)!.markPlayingStatus(midiEvent.command);
 	};
 
 	return {

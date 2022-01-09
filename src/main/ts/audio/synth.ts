@@ -1,5 +1,5 @@
-import type { MidiEventHandler } from "./midiEvent";
-import { Type } from "./midiEvent";
+import type { MidiEventHandler } from "./midi";
+import { MidiCommand } from "./midi";
 import { getKeyFreq, getKeyString } from "./key";
 import { getLogger } from "../logger";
 import { getAudioCtx } from "./audioCtx";
@@ -23,7 +23,7 @@ export const createSynth = (oscFactory: OscFactory): Synth => {
 
 	const handleMidiEvent: MidiEventHandler = (midiEvent) => {
 		const keyString = getKeyString(midiEvent.key);
-		if (midiEvent.type === Type.PRESS) {
+		if (midiEvent.command === MidiCommand.NOTE_ON) {
 			if (active.has(keyString)) {
 				logger.warn(`Already playing '${keyString}'.`);
 				return;

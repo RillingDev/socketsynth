@@ -1,6 +1,6 @@
-import type { MidiEventHandler } from "../audio/midiEvent";
-import { Type } from "../audio/midiEvent";
+import type { MidiEventHandler } from "../audio/midi";
 import type { Key } from "../audio/key";
+import { MidiCommand } from "../audio/midi";
 
 const qwertyKeyboardKeyMap = new Map<string, Key>([
 	["1", { octave: 5, tone: "C" }],
@@ -62,18 +62,21 @@ export const bindKeyboardKeyEvents = (
 	container: HTMLElement,
 	midiEventHandler: MidiEventHandler
 ): void => {
-	const handleKeyEvent = (keyboardKey: string, type: Type): void => {
+	const handleKeyEvent = (
+		keyboardKey: string,
+		command: MidiCommand
+	): void => {
 		keyboardKey = keyboardKey.toLowerCase();
 		if (!qwertyKeyboardKeyMap.has(keyboardKey)) {
 			return;
 		}
 		const key = qwertyKeyboardKeyMap.get(keyboardKey)!;
-		midiEventHandler({ type, key });
+		midiEventHandler({ command, key });
 	};
 	container.addEventListener("keydown", (e) =>
-		handleKeyEvent(e.key, Type.PRESS)
+		handleKeyEvent(e.key, MidiCommand.NOTE_ON)
 	);
 	container.addEventListener("keyup", (e) =>
-		handleKeyEvent(e.key, Type.RELEASE)
+		handleKeyEvent(e.key, MidiCommand.NOTE_OFF)
 	);
 };
