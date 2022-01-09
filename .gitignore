@@ -36,12 +36,12 @@ tsconfig.*.tsbuildinfo
 # Build Output files
 target
 
-main.js
-main.js.map
-main.js.LICENSE.txt
+src/main/resources/static/main.js
+src/main/resources/static/main.js.map
+src/main/resources/static/main.js.LICENSE.txt
 
-main.css
-main.css.map
+src/main/resources/static/main.css
+src/main/resources/static/main.css.map
 
 
 
