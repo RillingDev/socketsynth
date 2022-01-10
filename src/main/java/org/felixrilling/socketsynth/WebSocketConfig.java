@@ -10,11 +10,11 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	private final AppProperties appProperties;
 
-	public WebSocketConfig(AppProperties appProperties) {
+	WebSocketConfig(AppProperties appProperties) {
 		this.appProperties = appProperties;
 	}
 

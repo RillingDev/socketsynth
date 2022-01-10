@@ -8,6 +8,9 @@ import org.springframework.stereotype.Controller;
 
 import javax.sound.midi.InvalidMidiDataException;
 
+/**
+ * A simple controller that relays MIDI messages after validating them.
+ */
 @Controller
 class MidiController {
 
