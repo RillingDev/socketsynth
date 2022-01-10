@@ -21,13 +21,18 @@ class MidiController {
 
 	@MessageMapping("/midi/input")
 	@SendTo("/topic/midi/output")
-	public byte[] input(byte[] rawMidiMessage) throws InvalidMidiDataException {
-		// Parse message as a form of validation before relaying the original message.
-		MidiChannelMessage midiChannelMessage = midiService.deserialize(rawMidiMessage);
-		logger.info("Relaying event with type '{}' on channel '{}' and key '{}'.",
-			midiChannelMessage.type(),
-			midiChannelMessage.channel(),
-			midiChannelMessage.note());
+	public byte[] input(byte[] rawMidiMessage) {
+		try {
+			// Parse message as a form of validation before relaying the original message.
+			MidiChannelMessage midiChannelMessage = midiService.deserialize(rawMidiMessage);
+			logger.info("Relaying event with type '{}' on channel '{}' and key '{}'.",
+				midiChannelMessage.type(),
+				midiChannelMessage.channel(),
+				midiChannelMessage.note());
+		} catch (InvalidMidiDataException e) {
+			logger.warn("Could not parse MIDI '{}', ignoring it.", rawMidiMessage, e);
+			return null;
+		}
 
 		return rawMidiMessage;
 	}
