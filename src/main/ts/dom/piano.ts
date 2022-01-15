@@ -1,7 +1,10 @@
-import type { MidiEvent, MidiEventHandler } from "../audio/midiEvent";
-import type { Key } from "../audio/key";
-import { getKeyString, TONES } from "../audio/key";
-import { MidiCommand } from "../messaging/midiChannelMessage";
+import type {
+	MidiMessage,
+	MidiMessageHandler,
+	Note,
+} from "../midi/midiMessage";
+import { MidiCommand } from "../midi/midiMessage";
+import { getNote, getStringForNote, TONES_RELATIVE_TO_C } from "../audio/note";
 
 interface PianoKey {
 	readonly element: HTMLElement;
@@ -9,21 +12,21 @@ interface PianoKey {
 }
 
 const createPianoKeyComponent = (
-	key: Key,
-	midiEventHandler: MidiEventHandler
+	note: Note,
+	midiMessageHandler: MidiMessageHandler
 ): PianoKey => {
 	const element = document.createElement("button");
-	element.textContent = getKeyString(key);
+	element.textContent = getStringForNote(note);
 
 	const pressEventHandler = (): void =>
-		midiEventHandler({
-			key,
+		midiMessageHandler({
+			note,
 			command: MidiCommand.NOTE_ON,
 		});
 	const releaseEventHandler = (): void => {
 		if (element.dataset["playing"] === "true") {
-			midiEventHandler({
-				key,
+			midiMessageHandler({
+				note,
 				command: MidiCommand.NOTE_OFF,
 			});
 		}
@@ -45,23 +48,23 @@ const createPianoKeyComponent = (
 };
 
 interface Piano {
-	readonly markPlayingStatus: (midiEvent: MidiEvent) => void;
+	readonly markPlayingStatus: (midiMessage: MidiMessage) => void;
 }
 
 const STARTING_OCTAVE = 2;
 const ENDING_OCTAVE = 6;
 export const createPianoComponent = (
 	container: HTMLElement,
-	midiEventHandler: MidiEventHandler
+	midiMessageHandler: MidiMessageHandler
 ): Piano => {
 	const keys: Map<string, PianoKey> = new Map<string, PianoKey>();
 
 	for (let octave = STARTING_OCTAVE; octave <= ENDING_OCTAVE; octave++) {
-		for (const tone of TONES) {
-			const key = { tone, octave };
-			const pianoKey = createPianoKeyComponent(key, midiEventHandler);
+		for (const tone of TONES_RELATIVE_TO_C) {
+			const note = getNote(tone, octave);
+			const pianoKey = createPianoKeyComponent(note, midiMessageHandler);
 			pianoKey.element.classList.add("piano__key");
-			keys.set(getKeyString(key), pianoKey);
+			keys.set(getStringForNote(note), pianoKey);
 		}
 	}
 
@@ -71,14 +74,14 @@ export const createPianoComponent = (
 	);
 	container.append(...keyElements);
 
-	const markPlayingStatus = (midiEvent: MidiEvent): void => {
-		const keyString = getKeyString(midiEvent.key);
-		if (!keys.has(keyString)) {
+	const markPlayingStatus = (midiMessage: MidiMessage): void => {
+		const noteString = getStringForNote(midiMessage.note);
+		if (!keys.has(noteString)) {
 			throw new Error(
-				`Could not find key element for key '${keyString}'.`
+				`Could not find key element for key '${noteString}'.`
 			);
 		}
-		keys.get(keyString)!.markPlayingStatus(midiEvent.command);
+		keys.get(noteString)!.markPlayingStatus(midiMessage.command);
 	};
 
 	return {

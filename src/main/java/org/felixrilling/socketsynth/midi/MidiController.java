@@ -28,7 +28,7 @@ class MidiController {
 		try {
 			// Parse message as a form of validation before relaying the original message.
 			MidiChannelMessage midiChannelMessage = midiService.deserialize(rawMidiMessage);
-			logger.info("Relaying event with type '{}' on channel '{}' and key '{}'.",
+			logger.info("Relaying event with type '{}' on channel '{}' and note '{}'.",
 				midiChannelMessage.type(),
 				midiChannelMessage.channel(),
 				midiChannelMessage.note());

@@ -11,8 +11,9 @@ export enum MidiCommand {
 /**
  * Simplified version of a MIDI message with fixed velocity.
  */
-export interface MidiChannelMessage {
+export interface MidiMessage {
 	readonly command: MidiCommand;
-	readonly channel: number;
 	readonly note: Note;
 }
+
+export type MidiMessageHandler = (message: MidiMessage) => void;

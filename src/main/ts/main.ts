@@ -7,13 +7,11 @@ import {
 	leadOscFactory,
 	sineOscFactory,
 } from "./audio/oscFactory";
-import { createDelegatingMidiEventClient } from "./messaging/midiChannelMessageClient";
+import { createDelegatingMidiChannelMessageClient } from "./messaging/midiChannelMessageClient";
 import { bindKeyboardKeyEvents } from "./dom/keyboardKeyMapping";
-import type { MidiEvent } from "./audio/midiEvent";
-import { TONES } from "./audio/key";
-import type { MidiChannelMessage } from "./messaging/midiChannelMessage";
-import type { Tone } from "./audio/note";
-import { getNoteForKey } from "./audio/note";
+import type { MidiMessage } from "./midi/midiMessage";
+import type { MidiChannelMessage } from "./midi/midiChannelMessage";
+
 const logger = getLogger("main");
 
 const pianoContainer1 = document.getElementById("piano1")!;
@@ -27,74 +25,69 @@ const synth1 = createSynth(sineOscFactory);
 const synth2 = createSynth(leadOscFactory);
 const synth3 = createSynth(bassOscFactory);
 
-const midiMessageToEvent = (
-	midiChannelMessage: MidiChannelMessage
-): [number, MidiEvent] => {
-	const toneNum = midiChannelMessage.note % 12;
-	const tone = TONES[toneNum];
-	const octave = (midiChannelMessage.note - toneNum - 12) / 12;
-	const midi = {
-		command: midiChannelMessage.command,
-		key: {
-			octave,
-			tone,
+const extractMidiChannelMessage = (
+	channelMessage: MidiChannelMessage
+): [number, MidiMessage] => {
+	return [
+		channelMessage.channel,
+		{
+			command: channelMessage.command,
+			note: channelMessage.note,
 		},
-	};
-	return [midiChannelMessage.channel, midi];
+	];
 };
 
-const midiEventToMessage = (
+const createMidiChannelMessage = (
 	channel: number,
-	data: MidiEvent
+	message: MidiMessage
 ): MidiChannelMessage => {
-	const note = getNoteForKey(data.key.tone, data.key.octave);
 	return {
-		command: data.command,
+		command: message.command,
+		note: message.note,
 		channel,
-		note,
 	};
 };
 
 createStompClient(`wss://${location.host}${location.pathname}ws`)
 	.then((rawClient) => {
 		logger.info("Connected.", rawClient);
-		const client = createDelegatingMidiEventClient(rawClient);
+		const client = createDelegatingMidiChannelMessageClient(rawClient);
 
-		const piano1 = createPianoComponent(pianoContainer1, (midiEvent) =>
-			client.publish(midiEventToMessage(1, midiEvent))
+		const piano1 = createPianoComponent(pianoContainer1, (message) =>
+			client.publish(createMidiChannelMessage(1, message))
 		);
 		client.subscribe((message) => {
 			if (message.channel == 1) {
-				const [, event] = midiMessageToEvent(message);
-				synth1.handleMidiEvent(event);
+				const [, event] = extractMidiChannelMessage(message);
+				synth1.handleMidiMessage(event);
 				piano1.markPlayingStatus(event);
 			}
 		});
 
-		const piano2 = createPianoComponent(pianoContainer2, (midiEvent) =>
-			client.publish(midiEventToMessage(2, midiEvent))
+		const piano2 = createPianoComponent(pianoContainer2, (message) =>
+			client.publish(createMidiChannelMessage(2, message))
 		);
 		client.subscribe((message) => {
 			if (message.channel == 2) {
-				const [, event] = midiMessageToEvent(message);
-				synth2.handleMidiEvent(event);
+				const [, event] = extractMidiChannelMessage(message);
+				synth2.handleMidiMessage(event);
 				piano2.markPlayingStatus(event);
 			}
 		});
 
-		const piano3 = createPianoComponent(pianoContainer3, (midiEvent) =>
-			client.publish(midiEventToMessage(3, midiEvent))
+		const piano3 = createPianoComponent(pianoContainer3, (message) =>
+			client.publish(createMidiChannelMessage(3, message))
 		);
 
-		client.subscribe((message) => {
-			if (message.channel == 3) {
-				const [, event] = midiMessageToEvent(message);
-				synth3.handleMidiEvent(event);
-				piano3.markPlayingStatus(event);
+		client.subscribe((channelMessage) => {
+			if (channelMessage.channel == 3) {
+				const [, message] = extractMidiChannelMessage(channelMessage);
+				synth3.handleMidiMessage(message);
+				piano3.markPlayingStatus(message);
 			}
 		});
 
-		bindKeyboardKeyEvents(document.body, (midiEvent) => {
+		bindKeyboardKeyEvents(document.body, (message) => {
 			if (keyboardChannelSelect.value === "") {
 				return;
 			}
@@ -102,7 +95,7 @@ createStompClient(`wss://${location.host}${location.pathname}ws`)
 			if (Number.isNaN(channel)) {
 				return;
 			}
-			client.publish(midiEventToMessage(channel, midiEvent));
+			client.publish(createMidiChannelMessage(channel, message));
 		});
 
 		logger.info("Bound all synths.");

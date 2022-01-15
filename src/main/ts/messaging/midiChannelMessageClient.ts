@@ -1,7 +1,7 @@
 import type { Client } from "@stomp/stompjs";
 import { getLogger } from "../logger";
-import type { MidiChannelMessage } from "./midiChannelMessage";
-import { MidiCommand } from "./midiChannelMessage";
+import type { MidiChannelMessage } from "../midi/midiChannelMessage";
+import { MidiCommand } from "../midi/midiMessage";
 
 // https://en.wikipedia.org/wiki/MIDI#Technical_specifications
 const serializeMidi = (midiChannelMessage: MidiChannelMessage): Uint8Array => {
@@ -53,10 +53,10 @@ export interface MidiChannelMessageClient {
 	) => void;
 }
 
-export const createDelegatingMidiEventClient = (
+export const createDelegatingMidiChannelMessageClient = (
 	client: Client
 ): MidiChannelMessageClient => {
-	const logger = getLogger("DelegatingMidiEventClient");
+	const logger = getLogger("DelegatingMidiChannelMessageClient");
 	return {
 		publish: (message: MidiChannelMessage) => {
 			logger.debug(`Publishing: ${JSON.stringify(message)}.`);

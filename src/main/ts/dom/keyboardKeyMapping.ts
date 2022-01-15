@@ -1,66 +1,66 @@
-import type { MidiEventHandler } from "../audio/midiEvent";
-import type { Key } from "../audio/key";
-import { MidiCommand } from "../messaging/midiChannelMessage";
+import type { MidiMessageHandler, Note } from "../midi/midiMessage";
+import { MidiCommand } from "../midi/midiMessage";
+import { getNote } from "../audio/note";
 
-const qwertyKeyboardKeyMap = new Map<string, Key>([
-	["1", { octave: 5, tone: "C" }],
-	["2", { octave: 5, tone: "C#" }],
-	["3", { octave: 5, tone: "D" }],
-	["4", { octave: 5, tone: "D#" }],
-	["5", { octave: 5, tone: "E" }],
-	["6", { octave: 5, tone: "F" }],
-	["7", { octave: 5, tone: "F#" }],
-	["8", { octave: 5, tone: "G" }],
-	["9", { octave: 5, tone: "G#" }],
-	["0", { octave: 5, tone: "A" }],
-	["-", { octave: 5, tone: "A#" }],
-	["=", { octave: 5, tone: "B" }],
+const qwertyKeyboardKeyMap = new Map<string, Note>([
+	["1", getNote("C", 5)],
+	["2", getNote("C#", 5)],
+	["3", getNote("D", 5)],
+	["4", getNote("D#", 5)],
+	["5", getNote("E", 5)],
+	["6", getNote("F", 5)],
+	["7", getNote("F#", 5)],
+	["8", getNote("G", 5)],
+	["9", getNote("G#", 5)],
+	["0", getNote("A", 5)],
+	["-", getNote("A#", 5)],
+	["=", getNote("B", 5)],
 
-	["q", { octave: 4, tone: "C" }],
-	["w", { octave: 4, tone: "C#" }],
-	["e", { octave: 4, tone: "D" }],
-	["r", { octave: 4, tone: "D#" }],
-	["t", { octave: 4, tone: "E" }],
-	["y", { octave: 4, tone: "F" }],
-	["u", { octave: 4, tone: "F#" }],
-	["i", { octave: 4, tone: "G" }],
-	["o", { octave: 4, tone: "G#" }],
-	["p", { octave: 4, tone: "A" }],
-	["[", { octave: 4, tone: "A#" }],
-	["]", { octave: 4, tone: "B" }],
+	["q", getNote("C", 4)],
+	["w", getNote("C#", 4)],
+	["e", getNote("D", 4)],
+	["r", getNote("D#", 4)],
+	["t", getNote("E", 4)],
+	["y", getNote("F", 4)],
+	["u", getNote("F#", 4)],
+	["i", getNote("G", 4)],
+	["o", getNote("G#", 4)],
+	["p", getNote("A", 4)],
+	["[", getNote("A#", 4)],
+	["]", getNote("B", 4)],
 
-	["a", { octave: 3, tone: "C" }],
-	["s", { octave: 3, tone: "C#" }],
-	["d", { octave: 3, tone: "D" }],
-	["f", { octave: 3, tone: "D#" }],
-	["g", { octave: 3, tone: "E" }],
-	["h", { octave: 3, tone: "F" }],
-	["j", { octave: 3, tone: "F#" }],
-	["k", { octave: 3, tone: "G" }],
-	["l", { octave: 3, tone: "G#" }],
-	[";", { octave: 3, tone: "A" }],
+	["a", getNote("C", 3)],
+	["s", getNote("C#", 3)],
+	["d", getNote("D", 3)],
+	["f", getNote("D#", 3)],
+	["g", getNote("E", 3)],
+	["h", getNote("F", 3)],
+	["j", getNote("F#", 3)],
+	["k", getNote("G", 3)],
+	["l", getNote("G#", 3)],
+	[";", getNote("A", 3)],
 	// These *could* be bound, but browsers usually bind them to something else.
-	// ["'", { octave: 3, tone: "A#" }],
-	// ["enter", { octave: 3, tone: "B" }],
+	// ["'", getNoteForKey("A#", 3)],
+	// ["enter", getNoteForKey("B", 3)],
 
-	["z", { octave: 2, tone: "C" }],
-	["x", { octave: 2, tone: "C#" }],
-	["c", { octave: 2, tone: "D" }],
-	["v", { octave: 2, tone: "D#" }],
-	["b", { octave: 2, tone: "E" }],
-	["n", { octave: 2, tone: "F" }],
-	["m", { octave: 2, tone: "F#" }],
-	[",", { octave: 2, tone: "G" }],
-	[".", { octave: 2, tone: "G#" }],
+	["z", getNote("C", 2)],
+	["x", getNote("C#", 2)],
+	["c", getNote("D", 2)],
+	["v", getNote("D#", 2)],
+	["b", getNote("E", 2)],
+	["n", getNote("F", 2)],
+	["m", getNote("F#", 2)],
+	[",", getNote("G", 2)],
+	[".", getNote("G#", 2)],
 	// These *could* be bound, but browsers usually bind them to something else.
-	// ["/", { octave: 2, tone: "A" }],
-	// ["\\", { octave: 2, tone: "A#" }],
-	// ["`", { octave: 2, tone: "A" }],
+	// ["/", getNoteForKey("A", 2)],
+	// ["\\", getNoteForKey("A#", 2)],
+	// ["`", getNoteForKey("A", 2)],
 ]);
 
 export const bindKeyboardKeyEvents = (
 	container: HTMLElement,
-	midiEventHandler: MidiEventHandler
+	midiMessageHandler: MidiMessageHandler
 ): void => {
 	const handleKeyEvent = (
 		keyboardKey: string,
@@ -70,8 +70,8 @@ export const bindKeyboardKeyEvents = (
 		if (!qwertyKeyboardKeyMap.has(keyboardKey)) {
 			return;
 		}
-		const key = qwertyKeyboardKeyMap.get(keyboardKey)!;
-		midiEventHandler({ command, key });
+		const note = qwertyKeyboardKeyMap.get(keyboardKey)!;
+		midiMessageHandler({ command, note });
 	};
 	container.addEventListener("keydown", (e) =>
 		handleKeyEvent(e.key, MidiCommand.NOTE_ON)

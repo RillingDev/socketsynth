@@ -1,4 +1,4 @@
-import type { Note } from "../messaging/midiChannelMessage";
+import type { Note } from "../midi/midiMessage";
 
 export type Tone =
 	| "A"
@@ -32,7 +32,7 @@ Object.freeze(TONES_RELATIVE_TO_C);
 
 const OCTAVE_SIZE = 12;
 
-export const getNoteForKey = (tone: Tone, octave: number): Note => {
+export const getNote = (tone: Tone, octave: number): Note => {
 	const relativeTonePos = TONES_RELATIVE_TO_C.indexOf(tone);
 	const relativeOctave = octave + 1;
 	const note = relativeOctave * OCTAVE_SIZE + relativeTonePos;
@@ -56,6 +56,6 @@ const getFrequencyForNthPianoKey = (nthPianoKey: number): number =>
 	A ** (nthPianoKey - 49) * 440.0;
 
 // MIDI notes start before piano note range. Piano notes start with this offset.
-const PIANO_NOTE_OFFSET = getNoteForKey("A", 0) - 1;
+const PIANO_NOTE_OFFSET = getNote("A", 0) - 1;
 export const getFrequencyForNote = (note: Note): number =>
 	getFrequencyForNthPianoKey(note - PIANO_NOTE_OFFSET);

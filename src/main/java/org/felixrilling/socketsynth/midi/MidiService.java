@@ -30,7 +30,7 @@ class MidiService {
 		}
 
 		int channel = shortMessage.getChannel();
-		int key = shortMessage.getData1();
-		return new MidiChannelMessage(command, channel, key);
+		int note = shortMessage.getData1();
+		return new MidiChannelMessage(command, channel, note);
 	}
 }

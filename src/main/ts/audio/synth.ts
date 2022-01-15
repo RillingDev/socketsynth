@@ -1,9 +1,9 @@
-import type { MidiEventHandler } from "./midiEvent";
-import { getKeyFreq, getKeyString } from "./key";
+import type { MidiMessageHandler } from "../midi/midiMessage";
+import { MidiCommand } from "../midi/midiMessage";
 import { getLogger } from "../logger";
 import { getAudioCtx } from "./audioCtx";
 import type { OscFactory } from "./oscFactory";
-import { MidiCommand } from "../messaging/midiChannelMessage";
+import { getFrequencyForNote, getStringForNote } from "./note";
 
 const logger = getLogger("synth");
 
@@ -15,38 +15,40 @@ const createOsc = (oscFactory: OscFactory): OscillatorNode => {
 };
 
 export interface Synth {
-	readonly handleMidiEvent: MidiEventHandler;
+	readonly handleMidiMessage: MidiMessageHandler;
 }
 
 export const createSynth = (oscFactory: OscFactory): Synth => {
 	const active = new Map<string, OscillatorNode>();
 
-	const handleMidiEvent: MidiEventHandler = (midiEvent) => {
-		const keyString = getKeyString(midiEvent.key);
-		if (midiEvent.command === MidiCommand.NOTE_ON) {
-			if (active.has(keyString)) {
-				logger.warn(`Already playing '${keyString}'.`);
+	const handleMidiMessage: MidiMessageHandler = (message) => {
+		const noteString = getStringForNote(message.note);
+		if (message.command === MidiCommand.NOTE_ON) {
+			if (active.has(noteString)) {
+				logger.warn(`Already playing '${noteString}'.`);
 				return;
 			}
 
 			const osc = createOsc(oscFactory);
-			osc.frequency.value = getKeyFreq(midiEvent.key);
+			osc.frequency.value = getFrequencyForNote(message.note);
 
-			active.set(keyString, osc);
-			logger.debug(`Start playing' ${keyString}'.`);
+			active.set(noteString, osc);
+			logger.debug(`Start playing' ${noteString}'.`);
 			osc.start();
 		} else {
-			if (!active.has(keyString)) {
-				logger.info(`Could not find osc for '${keyString}', skipping.`);
+			if (!active.has(noteString)) {
+				logger.info(
+					`Could not find osc for '${noteString}', skipping.`
+				);
 				return;
 			}
-			const osc = active.get(keyString)!;
-			logger.debug(`Stop playing '${keyString}'.`);
-			active.delete(keyString);
+			const osc = active.get(noteString)!;
+			logger.debug(`Stop playing '${noteString}'.`);
+			active.delete(noteString);
 			osc.stop();
 		}
 	};
 
-	return { handleMidiEvent };
+	return { handleMidiMessage };
 };
 export { createOsc };

@@ -1,33 +1,33 @@
 import {
 	getFrequencyForNote,
-	getNoteForKey,
+	getNote,
 	getStringForNote,
 } from "../../../main/ts/audio/note";
 
 //https://www.inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
 
-describe("getNoteForKey", () => {
+describe("getNote", () => {
 	it("returns spec value", () => {
-		expect(getNoteForKey("C", -1)).toBe(0);
+		expect(getNote("C", -1)).toBe(0);
 
-		expect(getNoteForKey("A", 0)).toBe(21);
+		expect(getNote("A", 0)).toBe(21);
 
-		expect(getNoteForKey("C", 1)).toBe(24);
-		expect(getNoteForKey("C#", 1)).toBe(25);
-		expect(getNoteForKey("D", 1)).toBe(26);
-		expect(getNoteForKey("D#", 1)).toBe(27);
-		expect(getNoteForKey("E", 1)).toBe(28);
-		expect(getNoteForKey("F", 1)).toBe(29);
-		expect(getNoteForKey("F#", 1)).toBe(30);
-		expect(getNoteForKey("G", 1)).toBe(31);
-		expect(getNoteForKey("G#", 1)).toBe(32);
-		expect(getNoteForKey("A", 1)).toBe(33);
-		expect(getNoteForKey("A#", 1)).toBe(34);
-		expect(getNoteForKey("B", 1)).toBe(35);
+		expect(getNote("C", 1)).toBe(24);
+		expect(getNote("C#", 1)).toBe(25);
+		expect(getNote("D", 1)).toBe(26);
+		expect(getNote("D#", 1)).toBe(27);
+		expect(getNote("E", 1)).toBe(28);
+		expect(getNote("F", 1)).toBe(29);
+		expect(getNote("F#", 1)).toBe(30);
+		expect(getNote("G", 1)).toBe(31);
+		expect(getNote("G#", 1)).toBe(32);
+		expect(getNote("A", 1)).toBe(33);
+		expect(getNote("A#", 1)).toBe(34);
+		expect(getNote("B", 1)).toBe(35);
 
-		expect(getNoteForKey("C", 4)).toBe(60);
+		expect(getNote("C", 4)).toBe(60);
 
-		expect(getNoteForKey("G", 9)).toBe(127);
+		expect(getNote("G", 9)).toBe(127);
 	});
 });
 
@@ -59,14 +59,8 @@ describe("getNoteString", () => {
 // Based on https://en.wikipedia.org/wiki/Piano_key_frequencies
 describe("getFrequencyForNote", () => {
 	it("returns spec value", () => {
-		expect(getFrequencyForNote(getNoteForKey("A", 0))).toBeCloseTo(27.5, 2);
-		expect(getFrequencyForNote(getNoteForKey("A", 4))).toBeCloseTo(
-			440.0,
-			2
-		);
-		expect(getFrequencyForNote(getNoteForKey("A", 7))).toBeCloseTo(
-			3520.0,
-			2
-		);
+		expect(getFrequencyForNote(getNote("A", 0))).toBeCloseTo(27.5, 2);
+		expect(getFrequencyForNote(getNote("A", 4))).toBeCloseTo(440.0, 2);
+		expect(getFrequencyForNote(getNote("A", 7))).toBeCloseTo(3520.0, 2);
 	});
 });
