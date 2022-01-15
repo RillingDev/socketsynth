@@ -5,7 +5,7 @@ import { MidiCommand } from "../midi/midiMessage";
 
 // https://en.wikipedia.org/wiki/MIDI#Technical_specifications
 const serializeMidi = (midiChannelMessage: MidiChannelMessage): Uint8Array => {
-	const velocity = 0b1111111;
+	const velocity = 127; // Max. velocity.
 
 	let commandNum: number;
 	if (midiChannelMessage.command == MidiCommand.NOTE_ON) {
