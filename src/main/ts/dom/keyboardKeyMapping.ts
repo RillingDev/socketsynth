@@ -1,6 +1,6 @@
-import type { MidiEventHandler } from "../audio/midi";
+import type { MidiEventHandler } from "../audio/midiEvent";
 import type { Key } from "../audio/key";
-import { MidiCommand } from "../audio/midi";
+import { MidiCommand } from "../messaging/midiChannelMessage";
 
 const qwertyKeyboardKeyMap = new Map<string, Key>([
 	["1", { octave: 5, tone: "C" }],

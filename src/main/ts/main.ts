@@ -7,11 +7,11 @@ import {
 	leadOscFactory,
 	sineOscFactory,
 } from "./audio/oscFactory";
-import type { MidiChannelMessage } from "./messaging/midiChannelMessageClient";
 import { createDelegatingMidiEventClient } from "./messaging/midiChannelMessageClient";
 import { bindKeyboardKeyEvents } from "./dom/keyboardKeyMapping";
-import type { Midi } from "./audio/midi";
+import type { MidiEvent } from "./audio/midiEvent";
 import { TONES } from "./audio/key";
+import type { MidiChannelMessage } from "./messaging/midiChannelMessage";
 
 const logger = getLogger("main");
 
@@ -28,7 +28,7 @@ const synth3 = createSynth(bassOscFactory);
 
 const midiMessageToEvent = (
 	midiChannelMessage: MidiChannelMessage
-): [number, Midi] => {
+): [number, MidiEvent] => {
 	const toneNum = midiChannelMessage.note % 12;
 	const tone = TONES[toneNum];
 	const octave = (midiChannelMessage.note - toneNum - 12) / 12;
@@ -44,7 +44,7 @@ const midiMessageToEvent = (
 
 const midiEventToMessage = (
 	channel: number,
-	data: Midi
+	data: MidiEvent
 ): MidiChannelMessage => {
 	const note = 12 + data.key.octave * 12 + TONES.indexOf(data.key.tone);
 	return {

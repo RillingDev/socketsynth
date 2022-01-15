@@ -1,18 +1,7 @@
 import type { Client } from "@stomp/stompjs";
 import { getLogger } from "../logger";
-import { MidiCommand } from "../audio/midi";
-
-/**
- * Simplified version of a MIDI message with fixed velocity.
- */
-export interface MidiChannelMessage {
-	readonly command: MidiCommand;
-	readonly channel: number;
-	/**
-	 * MIDI notes are numbered from 0 to 127 assigned to C−1 to G9.
-	 */
-	readonly note: number;
-}
+import type { MidiChannelMessage } from "./midiChannelMessage";
+import { MidiCommand } from "./midiChannelMessage";
 
 // https://en.wikipedia.org/wiki/MIDI#Technical_specifications
 const serializeMidi = (midiChannelMessage: MidiChannelMessage): Uint8Array => {

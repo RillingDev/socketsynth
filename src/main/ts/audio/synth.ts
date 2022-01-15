@@ -1,9 +1,9 @@
-import type { MidiEventHandler } from "./midi";
-import { MidiCommand } from "./midi";
+import type { MidiEventHandler } from "./midiEvent";
 import { getKeyFreq, getKeyString } from "./key";
 import { getLogger } from "../logger";
 import { getAudioCtx } from "./audioCtx";
 import type { OscFactory } from "./oscFactory";
+import { MidiCommand } from "../messaging/midiChannelMessage";
 
 const logger = getLogger("synth");
 

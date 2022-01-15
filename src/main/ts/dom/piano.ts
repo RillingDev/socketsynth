@@ -1,7 +1,7 @@
-import type { Midi, MidiEventHandler } from "../audio/midi";
+import type { MidiEvent, MidiEventHandler } from "../audio/midiEvent";
 import type { Key } from "../audio/key";
 import { getKeyString, TONES } from "../audio/key";
-import { MidiCommand } from "../audio/midi";
+import { MidiCommand } from "../messaging/midiChannelMessage";
 
 interface PianoKey {
 	readonly element: HTMLElement;
@@ -45,7 +45,7 @@ const createPianoKeyComponent = (
 };
 
 interface Piano {
-	readonly markPlayingStatus: (midiEvent: Midi) => void;
+	readonly markPlayingStatus: (midiEvent: MidiEvent) => void;
 }
 
 const STARTING_OCTAVE = 2;
@@ -71,7 +71,7 @@ export const createPianoComponent = (
 	);
 	container.append(...keyElements);
 
-	const markPlayingStatus = (midiEvent: Midi): void => {
+	const markPlayingStatus = (midiEvent: MidiEvent): void => {
 		const keyString = getKeyString(midiEvent.key);
 		if (!keys.has(keyString)) {
 			throw new Error(
