@@ -1,9 +1,12 @@
 // Based on https://en.wikipedia.org/wiki/Piano_key_frequencies
+import type { Tone } from "./note";
+import { getNoteForKey, getStringForNote } from "./note";
+
 const A = 2 ** (1 / 12);
 const getKeyFreqByKeyPos = (nthPianoKey: number): number =>
 	A ** (nthPianoKey - 49) * 440;
 
-export const TONES = [
+export const TONES: Tone[] = [
 	"C",
 	"C#",
 	"D",
@@ -25,11 +28,11 @@ const getKeyPos = (key: Key): number => {
 };
 
 export interface Key {
-	readonly tone: string;
+	readonly tone: Tone;
 	readonly octave: number;
 }
 
 export const getKeyFreq = (key: Key): number =>
 	getKeyFreqByKeyPos(getKeyPos(key));
 
-export const getKeyString = (key: Key): string => `${key.tone}${key.octave}`;
+export const getKeyString = (key: Key): string => getStringForNote(getNoteForKey(key.tone, key.octave));

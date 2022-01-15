@@ -12,7 +12,8 @@ import { bindKeyboardKeyEvents } from "./dom/keyboardKeyMapping";
 import type { MidiEvent } from "./audio/midiEvent";
 import { TONES } from "./audio/key";
 import type { MidiChannelMessage } from "./messaging/midiChannelMessage";
-
+import type { Tone } from "./audio/note";
+import { getNoteForKey } from "./audio/note";
 const logger = getLogger("main");
 
 const pianoContainer1 = document.getElementById("piano1")!;
@@ -46,7 +47,7 @@ const midiEventToMessage = (
 	channel: number,
 	data: MidiEvent
 ): MidiChannelMessage => {
-	const note = 12 + data.key.octave * 12 + TONES.indexOf(data.key.tone);
+	const note = getNoteForKey(data.key.tone, data.key.octave);
 	return {
 		command: data.command,
 		channel,
