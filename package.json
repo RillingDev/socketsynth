@@ -8,7 +8,8 @@
         "js:watch": "webpack --watch --mode='development'",
         "js:dist": "webpack --mode='production'",
         "css:watch": "sass ./src/main/scss/main.scss ./src/main/resources/static/main.css --watch -I ./node_modules/normalize.css/",
-        "css:dist": "sass ./src/main/scss/main.scss ./src/main/resources/static/main.css --style compressed -I ./node_modules/normalize.css/"
+        "css:dist": "sass ./src/main/scss/main.scss ./src/main/resources/static/main.css --style compressed -I ./node_modules/normalize.css/",
+		"test": "jest"
     },
     "author": {
         "name": "Felix Rilling",
@@ -24,22 +25,25 @@
         "normalize.css": "^8.0.1"
     },
     "devDependencies": {
-        "@types/lodash": "^4.14.164",
+		"@types/jest": "^27.0.0",
+		"@types/lodash": "^4.14.164",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@typescript-eslint/parser": "^5.0.0",
 		"eslint": "^8.0.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-import": "^2.25.2",
 		"eslint-plugin-prettier": "^4.0.0",
-        "npm-run-all": "^4.1.5",
-        "prettier": "^2.1.2",
-        "rimraf": "^3.0.2",
-        "sass": "^1.28.0",
-        "terser": "^5.3.8",
-        "terser-webpack-plugin": "^5.0.3",
-        "ts-loader": "^9.2.5",
+		"jest": "^27.0.6",
+		"npm-run-all": "^4.1.5",
+		"prettier": "^2.1.2",
+		"rimraf": "^3.0.2",
+		"sass": "^1.28.0",
+		"terser": "^5.3.8",
+		"terser-webpack-plugin": "^5.0.3",
+		"ts-jest": "^27.0.3",
+		"ts-loader": "^9.2.5",
 		"typescript": "^4.3.4",
-        "webpack": "^5.3.2",
-        "webpack-cli": "^4.1.0"
-    }
+		"webpack": "^5.3.2",
+		"webpack-cli": "^4.1.0"
+	}
 }
