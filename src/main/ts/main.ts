@@ -25,65 +25,47 @@ const synth1 = createSynth(sineOscFactory);
 const synth2 = createSynth(leadOscFactory);
 const synth3 = createSynth(bassOscFactory);
 
-const extractMidiChannelMessage = (
-	channelMessage: MidiChannelMessage
-): [number, MidiMessage] => {
-	return [
-		channelMessage.channel,
-		{
-			command: channelMessage.command,
-			note: channelMessage.note,
-		},
-	];
-};
-
-const createMidiChannelMessage = (
-	channel: number,
-	message: MidiMessage
-): MidiChannelMessage => {
-	return {
-		command: message.command,
-		note: message.note,
-		channel,
-	};
-};
-
 createStompClient(`wss://${location.host}${location.pathname}ws`)
 	.then((rawClient) => {
 		logger.info("Connected.", rawClient);
 		const client = createDelegatingMidiChannelMessageClient(rawClient);
 
 		const piano1 = createPianoComponent(pianoContainer1, (message) =>
-			client.publish(createMidiChannelMessage(1, message))
+			client.publish({
+				...message,
+				channel: 1,
+			})
 		);
-		client.subscribe((message) => {
-			if (message.channel == 1) {
-				const [, event] = extractMidiChannelMessage(message);
-				synth1.handleMidiMessage(event);
-				piano1.markPlayingStatus(event);
+		client.subscribe((channelMessage) => {
+			if (channelMessage.channel == 1) {
+				synth1.handleMidiMessage(channelMessage);
+				piano1.markPlayingStatus(channelMessage);
 			}
 		});
 
 		const piano2 = createPianoComponent(pianoContainer2, (message) =>
-			client.publish(createMidiChannelMessage(2, message))
+			client.publish({
+				...message,
+				channel: 2,
+			})
 		);
-		client.subscribe((message) => {
-			if (message.channel == 2) {
-				const [, event] = extractMidiChannelMessage(message);
-				synth2.handleMidiMessage(event);
-				piano2.markPlayingStatus(event);
+		client.subscribe((channelMessage) => {
+			if (channelMessage.channel == 2) {
+				synth2.handleMidiMessage(channelMessage);
+				piano2.markPlayingStatus(channelMessage);
 			}
 		});
 
 		const piano3 = createPianoComponent(pianoContainer3, (message) =>
-			client.publish(createMidiChannelMessage(3, message))
+			client.publish({
+				...message,
+				channel: 3,
+			})
 		);
-
 		client.subscribe((channelMessage) => {
 			if (channelMessage.channel == 3) {
-				const [, message] = extractMidiChannelMessage(channelMessage);
-				synth3.handleMidiMessage(message);
-				piano3.markPlayingStatus(message);
+				synth3.handleMidiMessage(channelMessage);
+				piano3.markPlayingStatus(channelMessage);
 			}
 		});
 
@@ -95,7 +77,10 @@ createStompClient(`wss://${location.host}${location.pathname}ws`)
 			if (Number.isNaN(channel)) {
 				return;
 			}
-			client.publish(createMidiChannelMessage(channel, message));
+			client.publish({
+				...message,
+				channel,
+			});
 		});
 
 		logger.info("Bound all synths.");
