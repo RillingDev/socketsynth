@@ -9,8 +9,7 @@ import {
 } from "./audio/oscFactory";
 import { createDelegatingMidiChannelMessageClient } from "./messaging/midiChannelMessageClient";
 import { bindKeyboardKeyEvents } from "./dom/keyboardKeyMapping";
-import type { MidiMessage } from "./midi/midiMessage";
-import type { MidiChannelMessage } from "./midi/midiChannelMessage";
+import "../scss/main.scss";
 
 const logger = getLogger("main");
 

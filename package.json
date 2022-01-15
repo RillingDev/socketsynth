@@ -3,13 +3,13 @@
     "version": "0.1.0",
     "private": true,
     "scripts": {
-        "build": "npm-run-all --parallel css:dist js:dist",
-        "watch": "npm-run-all --parallel css:watch js:watch",
-        "js:watch": "webpack --watch --mode='development'",
-        "js:dist": "webpack --mode='production'",
-        "css:watch": "sass ./src/main/scss/main.scss ./src/main/resources/static/main.css --watch -I ./node_modules/normalize.css/",
-        "css:dist": "sass ./src/main/scss/main.scss ./src/main/resources/static/main.css --style compressed -I ./node_modules/normalize.css/",
-		"test": "jest"
+		"start": "npm run lint && npm run build",
+		"dist": "webpack --mode='production'",
+		"build": "webpack --mode='development'",
+		"watch": "webpack --mode='development' --watch",
+		"test": "jest",
+		"lint": "eslint ./src/main/ts/ --ext .ts",
+		"fix": "eslint ./src/main/ts/ --ext .ts --fix"
     },
     "author": {
         "name": "Felix Rilling",
@@ -19,21 +19,24 @@
     "license": "MIT",
     "dependencies": {
         "@stomp/stompjs": "^5.4.4",
-        "normalize.css": "^8.0.1"
+		"modern-normalize": "^1.1.0"
     },
     "devDependencies": {
 		"@types/jest": "^27.0.0",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
 		"@typescript-eslint/parser": "^5.0.0",
+		"css-loader": "^6.4.0",
 		"eslint": "^8.0.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-import": "^2.25.2",
 		"eslint-plugin-prettier": "^4.0.0",
 		"jest": "^27.0.6",
-		"npm-run-all": "^4.1.5",
+		"mini-css-extract-plugin": "~2.4.6",
 		"prettier": "^2.1.2",
 		"rimraf": "^3.0.2",
 		"sass": "^1.28.0",
+		"sass-loader": "^12.2.0",
+		"style-loader": "^3.3.0",
 		"terser": "^5.3.8",
 		"terser-webpack-plugin": "^5.0.3",
 		"ts-jest": "^27.0.3",

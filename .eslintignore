@@ -2,8 +2,8 @@
 ./node_modules/
 
 # don't lint build output
-./dist/
-./docs/
+./src/main/resources/static
 
 # don't lint build tooling configs
 .eslintrc.js
+webpack.config.js
