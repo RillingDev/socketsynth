@@ -1,4 +1,8 @@
-import { getNoteForKey, getStringForNote } from "../../../main/ts/audio/note";
+import {
+	getFrequencyForNote,
+	getNoteForKey,
+	getStringForNote,
+} from "../../../main/ts/audio/note";
 
 //https://www.inspiredacoustics.com/en/MIDI_note_numbers_and_center_frequencies
 
@@ -49,5 +53,20 @@ describe("getNoteString", () => {
 		expect(getStringForNote(60)).toBe("C4");
 
 		expect(getStringForNote(127)).toBe("G9");
+	});
+});
+
+// Based on https://en.wikipedia.org/wiki/Piano_key_frequencies
+describe("getFrequencyForNote", () => {
+	it("returns spec value", () => {
+		expect(getFrequencyForNote(getNoteForKey("A", 0))).toBeCloseTo(27.5, 2);
+		expect(getFrequencyForNote(getNoteForKey("A", 4))).toBeCloseTo(
+			440.0,
+			2
+		);
+		expect(getFrequencyForNote(getNoteForKey("A", 7))).toBeCloseTo(
+			3520.0,
+			2
+		);
 	});
 });

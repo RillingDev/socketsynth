@@ -31,6 +31,7 @@ export const TONES_RELATIVE_TO_C: Tone[] = [
 Object.freeze(TONES_RELATIVE_TO_C);
 
 const OCTAVE_SIZE = 12;
+
 export const getNoteForKey = (tone: Tone, octave: number): Note => {
 	const relativeTonePos = TONES_RELATIVE_TO_C.indexOf(tone);
 	const relativeOctave = octave + 1;
@@ -48,3 +49,13 @@ export const getStringForNote = (note: Note): string => {
 	const octave = relativeOctave - 1;
 	return `${tone}${octave}`;
 };
+
+// Based on https://en.wikipedia.org/wiki/Piano_key_frequencies
+const A = 2 ** (1 / 12);
+const getFrequencyForNthPianoKey = (nthPianoKey: number): number =>
+	A ** (nthPianoKey - 49) * 440.0;
+
+// MIDI notes start before piano note range. Piano notes start with this offset.
+const PIANO_NOTE_OFFSET = getNoteForKey("A", 0) - 1;
+export const getFrequencyForNote = (note: Note): number =>
+	getFrequencyForNthPianoKey(note - PIANO_NOTE_OFFSET);
