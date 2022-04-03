@@ -9,7 +9,7 @@ export enum MidiCommand {
 }
 
 /**
- * Simplified version of a MIDI message with fixed velocity.
+ * A simplified version of a MIDI message with fixed velocity.
  */
 export interface MidiMessage {
 	readonly command: MidiCommand;
